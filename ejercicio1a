@@ -1,0 +1,107 @@
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <iomanip>
+using namespace std;
+using namespace chrono;
+
+// Estructura para representar un Cliente
+struct Cliente {
+    int idCliente;
+    string nombreCliente;
+};
+
+// Función para generar nombres aleatorios
+string generarNombreAleatorio(int id) {
+    string nombres[] = {"Maria", "Pedro", "Juan", "Ana", "Carlos", "Laura", "Jose", "Sofia", "Luis", "Carmen"};
+    string apellidos[] = {"Perez", "Aguilera", "Suarez", "Garcia", "Lopez", "Martinez", "Rodriguez", "Gonzalez", "Fernandez", "Sanchez"};
+    
+    int indiceNombre = id % 10;
+    int indiceApellido = (id / 10) % 10;
+    
+    return nombres[indiceNombre] + " " + apellidos[indiceApellido];
+}
+
+// Función para crear y rellenar el arreglo de clientes
+Cliente* crearYRellenarClientes(int cantidad, double &tiempoCreacion) {
+    auto inicio = high_resolution_clock::now();
+    
+    // Crear el arreglo dinámico
+    Cliente* clientes = new Cliente[cantidad];
+    
+    // Rellenar el arreglo con datos aleatorios
+    for (int i = 0; i < cantidad; i++) {
+        clientes[i].idCliente = i;
+        clientes[i].nombreCliente = generarNombreAleatorio(i);
+    }
+    
+    auto fin = high_resolution_clock::now();
+    duration<double, milli> duracion = fin - inicio;
+    tiempoCreacion = duracion.count();
+    
+    return clientes;
+}
+
+// Función para imprimir los clientes
+void imprimirClientes(Cliente* clientes, int cantidad, double &tiempoImpresion) {
+    auto inicio = high_resolution_clock::now();
+    
+  
+    cout << "        LISTADO DE CLIENTES" << endl;
+  
+    cout << left << setw(15) << "IdCliente" << "NombreCliente" << endl;
+  
+    
+    // Imprimir los primeros 10 clientes
+    int limite = (cantidad < 10) ? cantidad : 10;
+    for (int i = 0; i < limite; i++) {
+        cout << left << setw(15) << clientes[i].idCliente 
+             << clientes[i].nombreCliente << endl;
+    }
+    
+    if (cantidad > 10) {
+        cout << "..." << endl;
+        cout << "(" << cantidad << " clientes en total)" << endl;
+    }
+    
+   
+    
+    auto fin = high_resolution_clock::now();
+    duration<double, milli> duracion = fin - inicio;
+    tiempoImpresion = duracion.count();
+}
+
+// Función para mostrar los tiempos de ejecución
+void mostrarTiempos(double tiempoCreacion, double tiempoImpresion) {
+  
+    cout << "     TIEMPOS DE EJECUCION" << endl;
+   
+    cout << fixed << setprecision(4);
+    cout << "Tiempo para crear y rellenar: " << tiempoCreacion << " ms" << endl;
+    cout << "Tiempo para imprimir:         " << tiempoImpresion << " ms" << endl;
+    cout << "Tiempo total:                 " << (tiempoCreacion + tiempoImpresion) << " ms" << endl;
+   
+}
+
+int main() {
+    const int CANTIDAD_CLIENTES = 10000;
+    double tiempoCreacion = 0.0;
+    double tiempoImpresion = 0.0;
+    
+    cout << "Creando arreglo de " << CANTIDAD_CLIENTES << " clientes..." << endl;
+    
+    // Crear y rellenar el arreglo
+    Cliente* clientes = crearYRellenarClientes(CANTIDAD_CLIENTES, tiempoCreacion);
+    
+    cout << "Arreglo creado exitosamente!" << endl;
+    
+    // Imprimir los clientes
+    imprimirClientes(clientes, CANTIDAD_CLIENTES, tiempoImpresion);
+    
+    // Mostrar los tiempos de ejecución
+    mostrarTiempos(tiempoCreacion, tiempoImpresion);
+    
+    // Liberar la memoria
+    delete[] clientes;
+    
+    return 0;
