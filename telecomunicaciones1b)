@@ -1,0 +1,136 @@
+#include <iostream>
+#include <chrono>
+#include <iomanip>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+using namespace chrono;
+
+// Estructura para representar el Precio de Llamadas
+struct PrecioLlamada {
+    int idPlan;
+    double precioMinLlamada;
+};
+
+// Función para generar un precio aleatorio entre 0.2 y 1.5
+double generarPrecioAleatorio() {
+    // Genera un número entre 0.2 y 1.5 con un decimal
+    double precio = 0.2 + (rand() % 14) * 0.1; // 0.2, 0.3, 0.4, ..., 1.5
+    return precio;
+}
+
+// Función para crear y rellenar el arreglo de precios
+PrecioLlamada* crearYRellenarPrecios(int cantidad, double &tiempoCreacion) {
+    auto inicio = high_resolution_clock::now();
+    
+    // Crear el arreglo dinámico
+    PrecioLlamada* planes = new PrecioLlamada[cantidad];
+    
+    // Rellenar el arreglo con datos
+    for (int i = 0; i < cantidad; i++) {
+        planes[i].idPlan = i;
+        planes[i].precioMinLlamada = generarPrecioAleatorio();
+    }
+    
+    auto fin = high_resolution_clock::now();
+    duration<double, milli> duracion = fin - inicio;
+    tiempoCreacion = duracion.count();
+    
+    return planes;
+}
+
+// Función para imprimir los planes
+void imprimirPlanes(PrecioLlamada* planes, int cantidad, double &tiempoImpresion) {
+    auto inicio = high_resolution_clock::now();
+    
+    cout << "\n========================================" << endl;
+    cout << "    PRECIO DE LLAMADAS POR PLAN" << endl;
+    cout << "========================================" << endl;
+    cout << left << setw(15) << "IdPlan" << "PrecioMinLlamada" << endl;
+    cout << "----------------------------------------" << endl;
+    
+    // Imprimir todos los planes (son pocos, entre 5 y 10)
+    for (int i = 0; i < cantidad; i++) {
+        cout << left << setw(15) << planes[i].idPlan 
+             << fixed << setprecision(1) << planes[i].precioMinLlamada << endl;
+    }
+    
+    cout << "========================================" << endl;
+    cout << "Total de planes: " << cantidad << endl;
+    
+    auto fin = high_resolution_clock::now();
+    duration<double, milli> duracion = fin - inicio;
+    tiempoImpresion = duracion.count();
+}
+
+// Función para mostrar los tiempos de ejecución
+void mostrarTiempos(double tiempoCreacion, double tiempoImpresion) {
+    cout << "\n========================================" << endl;
+    cout << "     TIEMPOS DE EJECUCION" << endl;
+    cout << "========================================" << endl;
+    cout << fixed << setprecision(6);
+    cout << "Tiempo para crear y rellenar: " << tiempoCreacion << " ms" << endl;
+    cout << "Tiempo para imprimir:         " << tiempoImpresion << " ms" << endl;
+    cout << "Tiempo total:                 " << (tiempoCreacion + tiempoImpresion) << " ms" << endl;
+    cout << "========================================" << endl;
+}
+
+// Función para calcular estadísticas de los precios
+void mostrarEstadisticas(PrecioLlamada* planes, int cantidad) {
+    double suma = 0.0;
+    double precioMin = planes[0].precioMinLlamada;
+    double precioMax = planes[0].precioMinLlamada;
+    
+    for (int i = 0; i < cantidad; i++) {
+        suma += planes[i].precioMinLlamada;
+        if (planes[i].precioMinLlamada < precioMin) {
+            precioMin = planes[i].precioMinLlamada;
+        }
+        if (planes[i].precioMinLlamada > precioMax) {
+            precioMax = planes[i].precioMinLlamada;
+        }
+    }
+    
+    double promedio = suma / cantidad;
+    
+    cout << "\n========================================" << endl;
+    cout << "         ESTADISTICAS" << endl;
+    cout << "========================================" << endl;
+    cout << fixed << setprecision(2);
+    cout << "Precio promedio:    $" << promedio << endl;
+    cout << "Precio mas bajo:    $" << precioMin << endl;
+    cout << "Precio mas alto:    $" << precioMax << endl;
+    cout << "========================================" << endl;
+}
+
+int main() {
+    // Inicializar la semilla para números aleatorios
+    srand(time(0));
+    
+    // Generar cantidad aleatoria entre 5 y 10
+    int cantidadPlanes = 5 + rand() % 6; // rand() % 6 da valores de 0 a 5, sumamos 5
+    
+    double tiempoCreacion = 0.0;
+    double tiempoImpresion = 0.0;
+    
+    cout << "Creando arreglo de " << cantidadPlanes << " planes de llamadas..." << endl;
+    
+    // Crear y rellenar el arreglo
+    PrecioLlamada* planes = crearYRellenarPrecios(cantidadPlanes, tiempoCreacion);
+    
+    cout << "Arreglo creado exitosamente!" << endl;
+    
+    // Imprimir los planes
+    imprimirPlanes(planes, cantidadPlanes, tiempoImpresion);
+    
+    // Mostrar estadísticas adicionales
+    mostrarEstadisticas(planes, cantidadPlanes);
+    
+    // Mostrar los tiempos de ejecución
+    mostrarTiempos(tiempoCreacion, tiempoImpresion);
+    
+    // Liberar la memoria
+    delete[] planes;
+    
+    return 0;
+}
