@@ -1,0 +1,225 @@
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <iomanip>
+using namespace std;
+using namespace chrono;
+
+// Estructura para representar un País
+struct Pais {
+    int idPais;
+    string nombrePais;
+};
+
+// Función para obtener un array con todos los países del mundo
+void obtenerPaisesDelMundo(string paises[], int &cantidad) {
+    string listaPaises[] = {
+        "Afghanistan", "Albania", "Algeria", "Andorra", "Angola",
+        "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+        "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
+        "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+        "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei",
+        "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+        "Cameroon", "Canada", "Central African Republic", "Chad", "Chile",
+        "China", "Colombia", "Comoros", "Congo", "Costa Rica",
+        "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark",
+        "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt",
+        "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini",
+        "Ethiopia", "Fiji", "Finland", "France", "Gabon",
+        "Gambia", "Georgia", "Germany", "Ghana", "Greece",
+        "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
+        "Haiti", "Honduras", "Hungary", "Iceland", "India",
+        "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
+        "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan",
+        "Kenya", "Kiribati", "Korea North", "Korea South", "Kosovo",
+        "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon",
+        "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania",
+        "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives",
+        "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
+        "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+        "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia",
+        "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua",
+        "Niger", "Nigeria", "North Macedonia", "Norway", "Oman",
+        "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea",
+        "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
+        "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis",
+        "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe",
+        "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone",
+        "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia",
+        "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan",
+        "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan",
+        "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo",
+        "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
+        "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+        "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
+        "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+    };
+    
+    cantidad = 195; // Total de países reconocidos por la ONU
+    
+    for (int i = 0; i < cantidad; i++) {
+        paises[i] = listaPaises[i];
+    }
+}
+
+// Función para crear y rellenar el arreglo de países
+Pais* crearYRellenarPaises(int &cantidad, double &tiempoCreacion) {
+    auto inicio = high_resolution_clock::now();
+    
+    // Obtener la lista de países
+    string listaPaises[195];
+    obtenerPaisesDelMundo(listaPaises, cantidad);
+    
+    // Crear el arreglo dinámico
+    Pais* paises = new Pais[cantidad];
+    
+    // Rellenar el arreglo con todos los países
+    for (int i = 0; i < cantidad; i++) {
+        paises[i].idPais = i;
+        paises[i].nombrePais = listaPaises[i];
+    }
+    
+    auto fin = high_resolution_clock::now();
+    duration<double, milli> duracion = fin - inicio;
+    tiempoCreacion = duracion.count();
+    
+    return paises;
+}
+
+// Función para imprimir los países
+void imprimirPaises(Pais* paises, int cantidad, double &tiempoImpresion) {
+    auto inicio = high_resolution_clock::now();
+    
+    cout << "\n========================================" << endl;
+    cout << "      PAISES DEL MUNDO" << endl;
+    cout << "========================================" << endl;
+    cout << left << setw(10) << "IdPais" << "Pais" << endl;
+    cout << "----------------------------------------" << endl;
+    
+    // Imprimir los primeros 20 países
+    int limite = (cantidad < 20) ? cantidad : 20;
+    for (int i = 0; i < limite; i++) {
+        cout << left << setw(10) << paises[i].idPais 
+             << paises[i].nombrePais << endl;
+    }
+    
+    cout << "..." << endl;
+    cout << "----------------------------------------" << endl;
+    
+    // Imprimir los últimos 5 países
+    cout << "\nUltimos 5 paises:" << endl;
+    cout << "----------------------------------------" << endl;
+    for (int i = cantidad - 5; i < cantidad; i++) {
+        cout << left << setw(10) << paises[i].idPais 
+             << paises[i].nombrePais << endl;
+    }
+    
+    cout << "========================================" << endl;
+    cout << "Total de paises: " << cantidad << endl;
+    cout << "========================================" << endl;
+    
+    auto fin = high_resolution_clock::now();
+    duration<double, milli> duracion = fin - inicio;
+    tiempoImpresion = duracion.count();
+}
+
+// Función para buscar un país por nombre
+void buscarPais(Pais* paises, int cantidad, string nombreBuscado) {
+    cout << "\n========================================" << endl;
+    cout << "Buscando: " << nombreBuscado << endl;
+    cout << "========================================" << endl;
+    
+    bool encontrado = false;
+    
+    for (int i = 0; i < cantidad; i++) {
+        if (paises[i].nombrePais == nombreBuscado) {
+            cout << "Pais encontrado!" << endl;
+            cout << "ID: " << paises[i].idPais << endl;
+            cout << "Nombre: " << paises[i].nombrePais << endl;
+            encontrado = true;
+            break;
+        }
+    }
+    
+    if (!encontrado) {
+        cout << "Pais no encontrado en la lista." << endl;
+    }
+    
+    cout << "========================================" << endl;
+}
+
+// Función para mostrar estadísticas de los países
+void mostrarEstadisticas(Pais* paises, int cantidad) {
+    int paisConNombreMasLargo = 0;
+    int paisConNombreMasCorto = 0;
+    int longitudMasLarga = paises[0].nombrePais.length();
+    int longitudMasCorta = paises[0].nombrePais.length();
+    
+    for (int i = 1; i < cantidad; i++) {
+        int longitud = paises[i].nombrePais.length();
+        
+        if (longitud > longitudMasLarga) {
+            longitudMasLarga = longitud;
+            paisConNombreMasLargo = i;
+        }
+        
+        if (longitud < longitudMasCorta) {
+            longitudMasCorta = longitud;
+            paisConNombreMasCorto = i;
+        }
+    }
+    
+   
+    cout << "         ESTADISTICAS" << endl;
+   
+    cout << "Total de paises: " << cantidad << endl;
+    cout << "\nNombre mas largo: " << paises[paisConNombreMasLargo].nombrePais 
+         << " (" << longitudMasLarga << " caracteres)" << endl;
+    cout << "Nombre mas corto: " << paises[paisConNombreMasCorto].nombrePais 
+         << " (" << longitudMasCorta << " caracteres)" << endl;
+    
+}
+
+// Función para mostrar los tiempos de ejecución
+// Función para mostrar los tiempos de ejecución
+void mostrarTiempos(double tiempoCreacion, double tiempoImpresion) {
+  
+    cout << "     TIEMPOS DE EJECUCION" << endl;
+    
+    cout << fixed << setprecision(4);
+    cout << "Tiempo para crear y rellenar: " << tiempoCreacion << " ms" << endl;
+    cout << "Tiempo para imprimir:         " << tiempoImpresion << " ms" << endl;
+    cout << "Tiempo total:                 " << (tiempoCreacion + tiempoImpresion) << " ms" << endl;
+}   // ← ESTA llave faltaba
+
+int main() {
+    int cantidadPaises = 0;
+    double tiempoCreacion = 0.0;
+    double tiempoImpresion = 0.0;
+    
+    cout << "Creando arreglo de paises del mundo..." << endl;
+    
+    // Crear y rellenar el arreglo
+    Pais* paises = crearYRellenarPaises(cantidadPaises, tiempoCreacion);
+    
+    cout << "Arreglo creado exitosamente con " << cantidadPaises << " paises!" << endl;
+    
+    // Imprimir los países
+    imprimirPaises(paises, cantidadPaises, tiempoImpresion);
+    
+    // Mostrar estadísticas
+    mostrarEstadisticas(paises, cantidadPaises);
+    
+    // Buscar países específicos (ejemplos)
+    buscarPais(paises, cantidadPaises, "Argentina");
+    buscarPais(paises, cantidadPaises, "Bolivia");
+    buscarPais(paises, cantidadPaises, "Brazil");
+    
+    // Mostrar los tiempos de ejecución
+    mostrarTiempos(tiempoCreacion, tiempoImpresion);
+    
+    // Liberar la memoria
+    delete[] paises;
+    
+    return 0;
+}
