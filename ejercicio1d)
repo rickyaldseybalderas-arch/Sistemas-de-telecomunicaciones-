@@ -1,0 +1,209 @@
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <iomanip>
+using namespace std;
+using namespace chrono;
+
+// Estructura para representar un Estado
+struct Estado {
+    int idEstado;
+    string nombreEstado;
+};
+
+// Función para crear y rellenar el arreglo de estados
+Estado* crearYRellenarEstados(double &tiempoCreacion) {
+    auto inicio = high_resolution_clock::now();
+    
+    // Crear el arreglo dinámico con exactamente 2 elementos
+    Estado* estados = new Estado[2];
+    
+    // Rellenar el arreglo con los dos estados posibles
+    estados[0].idEstado = 0;
+    estados[0].nombreEstado = "Pendiente";
+    
+    estados[1].idEstado = 1;
+    estados[1].nombreEstado = "Pagado";
+    
+    auto fin = high_resolution_clock::now();
+    duration<double, milli> duracion = fin - inicio;
+    tiempoCreacion = duracion.count();
+    
+    return estados;
+}
+
+// Función para imprimir los estados
+void imprimirEstados(Estado* estados, int cantidad, double &tiempoImpresion) {
+    auto inicio = high_resolution_clock::now();
+    
+  
+    cout << "         ESTADOS DE PAGO" << endl;
+  
+    cout << left << setw(15) << "IdEstado" << "Estado" << endl;
+  
+    
+    // Imprimir todos los estados (solo 2)
+    for (int i = 0; i < cantidad; i++) {
+        cout << left << setw(15) << estados[i].idEstado 
+             << estados[i].nombreEstado << endl;
+    }
+    
+ 
+    cout << "Total de estados: " << cantidad << endl;
+   
+    
+    auto fin = high_resolution_clock::now();
+    duration<double, milli> duracion = fin - inicio;
+    tiempoImpresion = duracion.count();
+}
+
+// Función para mostrar los tiempos de ejecución
+void mostrarTiempos(double tiempoCreacion, double tiempoImpresion) {
+   
+    cout << "     TIEMPOS DE EJECUCION" << endl;
+    cout << fixed << setprecision(6);
+    cout << "Tiempo para crear y rellenar: " << tiempoCreacion << " ms" << endl;
+    cout << "Tiempo para imprimir:         " << tiempoImpresion << " ms" << endl;
+    cout << "Tiempo total:                 " << (tiempoCreacion + tiempoImpresion) << " ms" << endl;
+   
+}
+
+// Función para buscar un estado por ID
+void buscarEstadoPorId(Estado* estados, int cantidad, int idBuscado) {
+   
+    cout << "Buscando estado con ID: " << idBuscado << endl;
+  
+    
+    bool encontrado = false;
+    
+    for (int i = 0; i < cantidad; i++) {
+        if (estados[i].idEstado == idBuscado) {
+            cout << "Estado encontrado!" << endl;
+            cout << "ID: " << estados[i].idEstado << endl;
+            cout << "Nombre: " << estados[i].nombreEstado << endl;
+            encontrado = true;
+            break;
+        }
+    }
+    
+    if (!encontrado) {
+        cout << "Estado no encontrado." << endl;
+    }
+    
+    
+}
+
+// Función para buscar un estado por nombre
+void buscarEstadoPorNombre(Estado* estados, int cantidad, string nombreBuscado) {
+ 
+    cout << "Buscando estado: " << nombreBuscado << endl;
+  
+    
+    bool encontrado = false;
+    
+    for (int i = 0; i < cantidad; i++) {
+        if (estados[i].nombreEstado == nombreBuscado) {
+            cout << "Estado encontrado!" << endl;
+            cout << "ID: " << estados[i].idEstado << endl;
+            cout << "Nombre: " << estados[i].nombreEstado << endl;
+            encontrado = true;
+            break;
+        }
+    }
+    
+    if (!encontrado) {
+        cout << "Estado no encontrado." << endl;
+    }
+    
+  
+}
+
+// Función para simular estadísticas de uso de estados
+void simularEstadisticasDeUso(Estado* estados, int cantidad) {
+   
+    cout << "    SIMULACION DE USO DE ESTADOS" << endl;
+  
+    
+    // Simulación de 100 transacciones aleatorias
+    int contadores[2] = {0, 0}; // Para contar Pendiente y Pagado
+    
+    srand(time(0));
+    
+    for (int i = 0; i < 100; i++) {
+        int estadoAleatorio = rand() % 2; // 0 o 1
+        contadores[estadoAleatorio]++;
+    }
+    
+    // Mostrar resultados
+    for (int i = 0; i < cantidad; i++) {
+        double porcentaje = (contadores[i] * 100.0) / 100.0;
+        cout << estados[i].nombreEstado << ": " << contadores[i] 
+             << " transacciones (" << fixed << setprecision(1) 
+             << porcentaje << "%)" << endl;
+    }
+    
+   
+}
+
+// Función para mostrar información del arreglo
+void mostrarInformacionArreglo(Estado* estados, int cantidad) {
+   
+    cout << "    INFORMACION DEL ARREGLO" << endl;
+    cout << "Cantidad de elementos: " << cantidad << endl;
+    cout << "Tamano en memoria: " << (cantidad * sizeof(Estado)) << " bytes" << endl;
+    cout << "Tipo de dato: struct Estado" << endl;
+   
+    
+    cout << "\nContenido detallado:" << endl;
+    for (int i = 0; i < cantidad; i++) {
+        cout << "  Posicion [" << i << "]: " << endl;
+        cout << "    - idEstado: " << estados[i].idEstado << endl;
+        cout << "    - nombreEstado: \"" << estados[i].nombreEstado << "\"" << endl;
+        cout << "    - Longitud del nombre: " << estados[i].nombreEstado.length() 
+             << " caracteres" << endl;
+    }
+    
+    
+}
+
+int main() {
+    const int CANTIDAD_ESTADOS = 2;
+    double tiempoCreacion = 0.0;
+    double tiempoImpresion = 0.0;
+    
+    cout << "Creando arreglo de estados..." << endl;
+    
+    // Crear y rellenar el arreglo
+    Estado* estados = crearYRellenarEstados(tiempoCreacion);
+    
+    cout << "Arreglo creado exitosamente con " << CANTIDAD_ESTADOS << " estados!" << endl;
+    
+    // Imprimir los estados
+    imprimirEstados(estados, CANTIDAD_ESTADOS, tiempoImpresion);
+    
+    // Mostrar información detallada del arreglo
+    mostrarInformacionArreglo(estados, CANTIDAD_ESTADOS);
+    
+    // Buscar estados por ID
+    buscarEstadoPorId(estados, CANTIDAD_ESTADOS, 0);
+    buscarEstadoPorId(estados, CANTIDAD_ESTADOS, 1);
+    buscarEstadoPorId(estados, CANTIDAD_ESTADOS, 2); // No existe
+    
+    // Buscar estados por nombre
+    buscarEstadoPorNombre(estados, CANTIDAD_ESTADOS, "Pendiente");
+    buscarEstadoPorNombre(estados, CANTIDAD_ESTADOS, "Pagado");
+    buscarEstadoPorNombre(estados, CANTIDAD_ESTADOS, "Cancelado"); // No existe
+    
+    // Simular estadísticas de uso
+    simularEstadisticasDeUso(estados, CANTIDAD_ESTADOS);
+    
+    // Mostrar los tiempos de ejecución
+    mostrarTiempos(tiempoCreacion, tiempoImpresion);
+    
+    // Liberar la memoria
+    delete[] estados;
+    
+    cout << "\nMemoria liberada correctamente." << endl;
+    
+    return 0;
+}
